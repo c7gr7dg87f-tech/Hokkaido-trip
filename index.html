@@ -24,13 +24,13 @@ header{grid-area:head;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22htt
 .brand{display:flex;align-items:baseline;gap:10px;padding:0 16px 8px}
 .brand h1{font-size:18px;letter-spacing:.5px}
 .brand span{font-size:12px;opacity:.8}
-.daybar{padding:0 16px 10px;font-size:13.5px;color:#fff;font-weight:600;letter-spacing:.3px}
-.daybar b{background:rgba(255,255,255,.18);border-radius:999px;padding:2px 10px;margin-left:4px}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scroll-snap-type:x proximity;scrollbar-width:none}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:0 16px 14px;scroll-snap-type:x proximity;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;scroll-snap-align:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;
   border-radius:999px;padding:6px 14px;cursor:pointer;font:inherit;font-size:13px;text-align:center;line-height:1.2;transition:.15s}
 .tab small{display:block;font-size:10.5px;opacity:.8}
+.tab small.tc{margin-top:2px;font-size:11.5px;font-weight:700;opacity:1;color:#ffe2bd}
+.tab.active small.tc{color:#fff}
 .tab:hover{background:rgba(255,255,255,.25)}
 .tab.active{background:var(--orange);border-color:var(--orange);box-shadow:0 2px 8px rgba(0,0,0,.25);font-weight:600}
 .tab.active small{opacity:1}
@@ -93,10 +93,22 @@ dialog .btns .ok{background:var(--orange);border-color:var(--orange);color:#fff;
 .loading.show{display:block}
 .mapwrap{grid-area:map;position:relative}
 .mapwrap #map{position:absolute;inset:0}
+.maphint{display:none}
 @media (max-width:899px){
-  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr 42%;grid-template-areas:"head" "list" "map"}
-  .photo{height:150px}
-  #list{padding:12px}
+  html,body{height:auto;overflow-x:hidden}
+  .app{display:block;height:auto}
+  header{position:static}
+  .brand{flex-wrap:wrap;gap:2px 10px}
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);overflow:visible;gap:8px;padding:0 12px 12px}
+  .tab{min-height:44px;padding:6px 4px;border-radius:12px}
+  #list{overflow:visible;height:auto;padding:12px;scroll-behavior:auto}
+  .summary .route,.body p,.body h3{overflow-wrap:anywhere}
+  .mapwrap{position:relative;height:300px;margin:0 0 14px;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,140,.15)}
+  .maphint{display:block;position:absolute;left:8px;bottom:8px;z-index:900;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:3px 10px;border-radius:999px;pointer-events:none;transition:opacity .6s}
+  .maphint.hide{opacity:0}
+  .photo{height:auto;aspect-ratio:16/9}
+  .mini{padding:6px 12px;font-size:13px}
+  .rentbtn{padding:9px 14px}
 }
 </style>
 </head>
@@ -105,10 +117,9 @@ dialog .btns .ok{background:var(--orange);border-color:var(--orange);color:#fff;
   <header>
     <div class="brand"><h1>🍁 北海道 11 天自駕行程</h1><span>2026/10/19 – 10/29 ・ 新千歲進出</span></div>
     <nav class="tabs" id="tabs" aria-label="天數"></nav>
-    <div class="daybar" id="daybar"></div>
   </header>
   <main id="list"></main>
-  <div class="mapwrap"><div class="loading" id="loading">🚗 正在計算駕駛路線…</div><div id="map"></div></div>
+  <div class="mapwrap" id="mapwrap"><div class="maphint" id="maphint">單指捲動頁面・雙指移動／縮放地圖</div><div class="loading" id="loading">🚗 正在計算駕駛路線…</div><div id="map"></div></div>
 </div>
 
 <dialog id="dlg">
@@ -261,6 +272,7 @@ function imgTag(stop, cls=""){
 }
 
 /* ---------- 地圖 ---------- */
+const mqMobile = window.matchMedia("(max-width:899px)");
 const map = L.map("map", {zoomControl:true}).setView([43.5,142.5], 7);
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:19, attribution:"© OpenStreetMap contributors"}).addTo(map);
 let layer = L.layerGroup().addTo(map);
@@ -369,13 +381,20 @@ $("dlgForm").addEventListener("submit", e => {
 $("dlgReset").onclick = () => { const ov = loadOv(); delete ov[editing.i+":"+editing.kind]; saveOv(ov); $("dlg").close(); renderMeta(); };
 $("dlgCancel").onclick = () => $("dlg").close();
 
+function placeMap(){
+  const w = $("mapwrap"), app = document.querySelector(".app"), sum = document.querySelector(".summary");
+  if(mqMobile.matches && sum){ if(w.previousElementSibling!==sum) sum.after(w); map.dragging.disable(); }
+  else { if(w.parentElement!==app) app.appendChild(w); map.dragging.enable(); }
+  map.invalidateSize();
+}
 function renderTabs(){
-  $("tabs").innerHTML = TRIP.map((d,i)=>`<button class="tab" data-i="${i}">Day ${pad(i+1)}<small>${d.date}（${d.wd}）</small></button>`).join("");
+  $("tabs").innerHTML = TRIP.map((d,i)=>`<button class="tab" data-i="${i}">Day ${pad(i+1)}<small>${d.date}（${d.wd}）</small><small class="tc">${d.city?"🏨 "+esc(d.city):"✈️ 返台"}</small></button>`).join("");
   $("tabs").onclick = e => { const b=e.target.closest(".tab"); if(b) renderDay(+b.dataset.i); };
 }
 
 function renderDay(i, opt={}){
   cur = i; const d = TRIP[i];
+  document.querySelector(".app").appendChild($("mapwrap")); // 先移出 #list，避免被重繪清掉
   document.querySelectorAll(".tab").forEach((t,k)=>{
     t.classList.toggle("active", k===i);
     if(k===i) t.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
@@ -406,8 +425,8 @@ function renderDay(i, opt={}){
         </div>
       </article>`).join("")}
     <div class="credit">地圖 © OpenStreetMap ・ 路線 OSRM ・ 照片 Wikimedia Commons</div>`;
+  placeMap();
   renderMeta();
-  $("daybar").innerHTML = d.city ? `🏨 Day ${pad(i+1)} 住宿：<b>${esc(d.city)}</b>` : `✈️ Day ${pad(i+1)}：搭機返台`;
   if(!opt.keepScroll) $("list").scrollTop = 0;
 
   layer.clearLayers(); markers = [];
@@ -430,6 +449,7 @@ $("list").addEventListener("click", e => {
   const c = e.target.closest(".card"); if(!c) return;
   const k = +c.dataset.k, s = TRIP[cur].stops[k];
   highlight(k);
+  if(mqMobile.matches) $("mapwrap").scrollIntoView({behavior:"smooth",block:"start"});
   map.flyTo([s.lat,s.lng], 14, {duration:1.2});
   map.once("moveend", ()=>markers[k].openPopup());
 });
@@ -438,7 +458,8 @@ document.addEventListener("keydown", e => {
   if(e.key==="ArrowRight" && cur<TRIP.length-1) renderDay(cur+1);
   if(e.key==="ArrowLeft" && cur>0) renderDay(cur-1);
 });
-window.addEventListener("resize", ()=>map.invalidateSize());
+window.addEventListener("resize", placeMap);
+setTimeout(()=>$("maphint").classList.add("hide"), 5000);
 
 renderTabs();
 const m = location.hash.match(/day-(\d+)/);
