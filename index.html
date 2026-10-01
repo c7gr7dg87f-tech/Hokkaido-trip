@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>北海道 11 天自駕行程</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --blue:#1f4e8c; --blue-2:#2f6db5; --blue-soft:#e8f0fa;
+  --orange:#f28c28; --orange-soft:#fff1e0;
+  --red:#d93025; --red-soft:#fdeceb;
+  --amber:#f6b73c; --amber-soft:#fff6dc;
+  --bg:#f5f7fb; --card:#fff; --text:#1c2733; --muted:#6a7787; --line:#e1e6ee;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5}
+.app{display:grid;height:100vh;height:100dvh;grid-template-rows:auto 1fr;grid-template-columns:minmax(380px,460px) 1fr;
+  grid-template-areas:"head head" "list map"}
+header{grid-area:head;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22360%22%20height%3D%22360%22%3E%3Cg%20transform%3D%22translate%2850%2060%29%20scale%281%29%22%20opacity%3D%220.35%22%3E%3Cg%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28210%2040%29%20scale%280.8%29%22%20opacity%3D%220.35%22%3E%3Cg%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28310%20150%29%20scale%281.2%29%22%20opacity%3D%220.35%22%3E%3Cg%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28120%20190%29%20scale%280.9%29%22%20opacity%3D%220.35%22%3E%3Cg%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28250%20270%29%20scale%281%29%22%20opacity%3D%220.35%22%3E%3Cg%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2840%20320%29%20scale%280.8%29%22%20opacity%3D%220.35%22%3E%3Cg%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28160%20100%29%20rotate%2825%29%20scale%281%29%22%20fill%3D%22%23ffd9a8%22%20opacity%3D%220.12%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28300%2040%29%20rotate%28-20%29%20scale%280.8%29%22%20fill%3D%22%23ffd9a8%22%20opacity%3D%220.12%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2870%20230%29%20rotate%2840%29%20scale%281.1%29%22%20fill%3D%22%23ffd9a8%22%20opacity%3D%220.12%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28220%20200%29%20rotate%28-35%29%20scale%280.9%29%22%20fill%3D%22%23ffd9a8%22%20opacity%3D%220.12%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28330%20300%29%20rotate%2815%29%20scale%281%29%22%20fill%3D%22%23ffd9a8%22%20opacity%3D%220.12%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28130%20320%29%20rotate%28-10%29%20scale%280.8%29%22%20fill%3D%22%23ffd9a8%22%20opacity%3D%220.12%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") 0 0/360px 360px,linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;padding:10px 0 0;z-index:500}
+.brand{display:flex;align-items:baseline;gap:10px;padding:0 16px 8px}
+.brand h1{font-size:18px;letter-spacing:.5px}
+.brand span{font-size:12px;opacity:.8}
+.daybar{padding:0 16px 10px;font-size:13.5px;color:#fff;font-weight:600;letter-spacing:.3px}
+.daybar b{background:rgba(255,255,255,.18);border-radius:999px;padding:2px 10px;margin-left:4px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scroll-snap-type:x proximity;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;scroll-snap-align:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;
+  border-radius:999px;padding:6px 14px;cursor:pointer;font:inherit;font-size:13px;text-align:center;line-height:1.2;transition:.15s}
+.tab small{display:block;font-size:10.5px;opacity:.8}
+.tab:hover{background:rgba(255,255,255,.25)}
+.tab.active{background:var(--orange);border-color:var(--orange);box-shadow:0 2px 8px rgba(0,0,0,.25);font-weight:600}
+.tab.active small{opacity:1}
+#list{grid-area:list;overflow-y:auto;padding:16px;scroll-behavior:smooth;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22360%22%20height%3D%22360%22%3E%3Cg%20transform%3D%22translate%2850%2060%29%20scale%281%29%22%20opacity%3D%220.55%22%3E%3Cg%20stroke%3D%22%239bb8de%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28210%2040%29%20scale%280.8%29%22%20opacity%3D%220.55%22%3E%3Cg%20stroke%3D%22%239bb8de%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28310%20150%29%20scale%281.2%29%22%20opacity%3D%220.55%22%3E%3Cg%20stroke%3D%22%239bb8de%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28120%20190%29%20scale%280.9%29%22%20opacity%3D%220.55%22%3E%3Cg%20stroke%3D%22%239bb8de%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28250%20270%29%20scale%281%29%22%20opacity%3D%220.55%22%3E%3Cg%20stroke%3D%22%239bb8de%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2840%20320%29%20scale%280.8%29%22%20opacity%3D%220.55%22%3E%3Cg%20stroke%3D%22%239bb8de%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M0-10V10M-8.7-5L8.7%205M-8.7%205L8.7-5%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28160%20100%29%20rotate%2825%29%20scale%281%29%22%20fill%3D%22%23f28c28%22%20opacity%3D%220.16%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28300%2040%29%20rotate%28-20%29%20scale%280.8%29%22%20fill%3D%22%23f28c28%22%20opacity%3D%220.16%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2870%20230%29%20rotate%2840%29%20scale%281.1%29%22%20fill%3D%22%23f28c28%22%20opacity%3D%220.16%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28220%20200%29%20rotate%28-35%29%20scale%280.9%29%22%20fill%3D%22%23f28c28%22%20opacity%3D%220.16%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28330%20300%29%20rotate%2815%29%20scale%281%29%22%20fill%3D%22%23f28c28%22%20opacity%3D%220.16%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28130%20320%29%20rotate%28-10%29%20scale%280.8%29%22%20fill%3D%22%23f28c28%22%20opacity%3D%220.16%22%3E%3Cpath%20d%3D%22M0-18L4-9%2010-12%208-3%2016-5%2010%203%2014%208%204%206%203%2016H-3L-4%206-14%208-10%203-16-5-8-3-10-12-4-9Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") 0 0/360px 360px,linear-gradient(180deg,#e9f1fb 0%,#f7fafe 55%,#fff6ec 100%)}
+#map{grid-area:map;z-index:1}
+.summary{background:var(--card);border-radius:var(--radius);padding:14px 16px;border-left:5px solid var(--orange);box-shadow:0 2px 10px rgba(31,78,140,.08);margin-bottom:16px}
+.summary .date{font-size:12px;color:var(--orange);font-weight:700;letter-spacing:1px}
+.summary h2{font-size:18px;color:var(--blue);margin:2px 0 8px}
+.summary .route{font-size:13.5px;color:var(--muted);margin-bottom:10px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;padding:3px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-weight:600}
+.stayrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 10px;font-size:14px}
+.stayrow .city{background:var(--orange-soft);color:#b35c00;font-weight:700;padding:2px 10px;border-radius:999px}
+.stayrow a{color:var(--blue-2);font-weight:600;text-decoration:none;border-bottom:1px dashed var(--blue-2)}
+.stayrow .muted{color:var(--muted);font-size:13px}
+.mini{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:2px 8px;font:inherit;font-size:12px;cursor:pointer}
+.mini:hover{border-color:var(--blue-2);color:var(--blue-2)}
+.rentbtn{display:inline-flex;align-items:center;gap:4px;background:var(--blue);color:#fff;border:0;border-radius:10px;padding:5px 12px;font:inherit;font-size:13.5px;font-weight:600;text-decoration:none;cursor:pointer}
+.rentbtn.empty{background:#fff;color:var(--blue);border:1px dashed var(--blue-2)}
+dialog{border:0;border-radius:14px;padding:18px;width:min(92vw,380px);box-shadow:0 10px 40px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+dialog h3{color:var(--blue);margin-bottom:10px;font-size:16px}
+dialog label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+dialog input{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;margin-top:3px}
+dialog .err{color:var(--red);font-size:12.5px;min-height:18px;margin-top:6px}
+dialog .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+dialog .btns button{padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;font:inherit;cursor:pointer}
+dialog .btns .ok{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600}
+.pill.osrm{background:#eef7ee;color:#2a7a3b}
+.pill.warn-note{background:var(--amber-soft);color:#8a5a00;cursor:pointer}
+.tag{display:inline-block;font-size:12.5px;padding:3px 10px;border-radius:8px;margin:6px 6px 0 0;font-weight:600}
+.tag.warn{background:var(--red-soft);color:var(--red);border:1px solid #f3b8b4}
+.tag.food{background:var(--amber-soft);color:#a15c00;border:1px solid #f4d48a}
+.foods-box{margin-top:10px}
+.card{background:var(--card);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;box-shadow:0 2px 10px rgba(31,78,140,.08);
+  cursor:pointer;border:2px solid transparent;transition:transform .15s,box-shadow .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(31,78,140,.16)}
+.card.active{border-color:var(--orange)}
+.photo{position:relative;height:170px;background:linear-gradient(135deg,var(--blue-2),var(--orange));overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:54px;z-index:0}
+.photo img{position:relative;z-index:1}
+.num{position:absolute;top:10px;left:10px;z-index:2;width:30px;height:30px;border-radius:50%;background:var(--orange);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.body{padding:12px 14px 14px}
+.body h3{font-size:16px;color:var(--blue)}
+.body p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.time{font-size:12px;color:var(--blue-2);font-weight:600}
+.credit{font-size:11px;color:var(--muted);text-align:center;padding:6px 0 24px}
+/* map markers & popup */
+.mk{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--orange);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.mk b{display:block;transform:rotate(45deg);color:#fff;text-align:center;line-height:26px;font-size:13px}
+.mk.on{background:var(--blue)}
+.leaflet-popup-content{margin:0;width:230px!important}
+.pop img{width:100%;height:120px;object-fit:cover;display:block;border-radius:12px 12px 0 0;background:linear-gradient(135deg,var(--blue-2),var(--orange))}
+.pop div{padding:8px 12px 10px}
+.pop h4{font-size:14px;color:var(--blue);margin-bottom:2px}
+.pop p{font-size:12px;color:var(--muted);margin:0}
+.leaflet-popup-content-wrapper{padding:0;border-radius:12px;overflow:hidden}
+.loading{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:1000;background:#fff;padding:6px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);font-size:13px;color:var(--blue);display:none}
+.loading.show{display:block}
+.mapwrap{grid-area:map;position:relative}
+.mapwrap #map{position:absolute;inset:0}
+@media (max-width:899px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr 42%;grid-template-areas:"head" "list" "map"}
+  .photo{height:150px}
+  #list{padding:12px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><h1>🍁 北海道 11 天自駕行程</h1><span>2026/10/19 – 10/29 ・ 新千歲進出</span></div>
+    <nav class="tabs" id="tabs" aria-label="天數"></nav>
+    <div class="daybar" id="daybar"></div>
+  </header>
+  <main id="list"></main>
+  <div class="mapwrap"><div class="loading" id="loading">🚗 正在計算駕駛路線…</div><div id="map"></div></div>
+</div>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlgForm">
+    <h3 id="dlgTitle"></h3>
+    <label>名稱<input id="dlgName" maxlength="80" autocomplete="off"></label>
+    <label>連結（http／https，可留空；只填名稱時會開 Google Maps 搜尋）<input id="dlgUrl" inputmode="url" autocomplete="off" placeholder="https://"></label>
+    <div class="err" id="dlgErr"></div>
+    <div class="btns"><button type="button" id="dlgReset">還原</button><button type="button" id="dlgCancel">取消</button><button type="submit" class="ok">儲存</button></div>
+  </form>
+</dialog>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ---------- 資料 ---------- */
+// 照片：Wikimedia Commons（可免費嵌入），載入失敗時自動顯示漸層 + emoji
+const P = {
+  cts:"Hokkaido New Chitose Airport13n4272.jpg",
+  heiwa:"Asahikawa city Heiwa street shopping park.jpg",
+  ramen:"Asahikawa ramen by orangeobject in Asahikawa, Hokkaido.jpg",
+  jingi:"Jingisukan at Asahi Beer Community Hall.jpg",
+  seal:"Spotted Seal.JPG",
+  noshappu:"NoshappuCape.JPG",
+  fukuko:"Wakkanai Fukukoichiba 18-06-02.jpg",
+  soya:"Sunset of Cape Soya.jpg",
+  soyaHill:"Soya Hills White Shell Road.jpg",
+  sounkyo:"秋函（Autumn in valley） - panoramio.jpg",
+  kurodake:"Daisetsuzan Sounkyo Kurodake Ropeway Kurodake Station.jpg",
+  patch:"140724 Biei Hokkaido Japan01s8.jpg",
+  blue:"Biei Blue-pond.jpg",
+  ningle:"130503 Ningle Terrace Furano Hokkaido Japan05s10.jpg",
+  ishikari:"石狩川河口（Ishikari River Estuary） - panoramio.jpg",
+  sakai:"Sakaimachi street Otaru Hokkaido11n.jpg",
+  tengu:"Otaru-Tenguyama 20220625.jpg",
+  yotei:"Mount Yōtei and Mount Niseko-Annupuri.jpg",
+  kyogoku:"Kyogoku, Fukidashi Park 2024.jpg",
+  toya:"Lake Toya 20140808.jpg",
+  jozankei:"定山渓二見吊橋 (Jozankei Futami suspension bridge) - panoramio.jpg",
+  nakajima:"Nakajima Park Sapporo03bs5s4272.jpg",
+  hokudai:"Ginkgo tree-lined avenue in Hokkaido University 05.jpg",
+  tanuki:"Tanukikoji 01.jpg",
+  moiwa:"City nightscape of Sapporo from Mt. Moiwa 20260703a.jpg",
+  market:"Nijo fish Market 2014.jpg",
+  odori:"Odori park at Sapporo TV tower.jpg",
+  clock:"Sapporo Clock Tower Hokkaido Japan 2.jpg",
+  miso:"Miso ramen of Sapporo 01.jpg",
+  curry:"A soup curry dish in Sapporo - Flickr - odako1.jpg",
+  don:"Jumbo kaisendon.JPG",
+  sushi:"2009, sushi in Otaru.jpg",
+  nikka:"130823Nikka Wisky Yoichi Distillery Hokkaido Japan02s3.jpg",
+  canal:"Otaru Canal HDR2.jpg",
+  takino:"Takino Suzuran Hillside Park - Sep 17, 2023.jpg",
+  buddha:"Hill of the Buddha, Makomanai Takino Cemetery 1 - Jul 11, 2020.jpg",
+  jingu:"Hokkaido Jingu.JPG"
+};
+const S = (name, em, lat, lng, desc, photo, extra={}) => ({name, em, lat, lng, desc, photo, ...extra});
+
+const TRIP = [
+ { date:"10/19", wd:"一", title:"新千歲機場 ➔ 旭川", route:"新千歲機場 (CTS) ➔ 旭川平和通買物公園", drive:"約 2.5 小時", city:"旭川", stay:{name:"",url:""}, rent:{pickup:{name:"",url:""}},
+   foods:["旭川醬油拉麵（青葉／梅光軒）","成吉思汗大黑屋烤羊肉"], warnings:[],
+   stops:[
+    S("新千歲機場 (CTS)","✈️",42.7752,141.6923,"取車、啟程自駕，沿道央道北上旭川。",P.cts,{time:"抵達・取車"}),
+    S("旭川平和通買物公園","🛍️",43.7670,142.3589,"日本第一條永久步行者天國，晚餐在此周邊。",P.heiwa,{foods:["旭川醬油拉麵（青葉／梅光軒）","成吉思汗大黑屋烤羊肉"]})
+   ]},
+ { date:"10/20", wd:"二", title:"旭川 ➔ 宗谷岬 ➔ 稚內", route:"旭川 ➔ 宗谷岬（最北端）➔ 宗谷丘陵白色小路 ➔ 稚內副港市場", drive:"約 3.5–4 小時", city:"稚內", stay:{name:"",url:""},
+   foods:["最北端食堂 扇貝拉麵","章魚涮涮鍋","宗谷黑牛"], warnings:[],
+   stops:[
+    S("旭川出發","🚗",43.7670,142.3589,"一早沿國道40號北上。",P.heiwa),
+    S("宗谷岬（日本最北端）","🧭",45.5228,141.9366,"最北端之碑與間宮林藏像，必拍地標。",P.soya,{foods:["最北端食堂 扇貝拉麵"]}),
+    S("宗谷丘陵白色小路","🛣️",45.4981,141.9542,"貝殼鋪成的白色小路，延伸至丘陵與海。",P.soyaHill),
+    S("稚內副港市場","🐙",45.4111,141.6811,"海鮮市場與溫泉設施，晚餐吃章魚涮涮鍋。",P.fukuko,{foods:["章魚涮涮鍋","宗谷黑牛"]})
+   ]},
+ { date:"10/21", wd:"三", title:"稚內 ➔ 歐羅巴海線 ➔ 旭川", route:"稚內 ➔ 野寒布岬 ➔ 拔海港（看海豹）➔ 日本海歐羅巴海線（106 號）➔ 返旭川", drive:"約 4 小時", city:"旭川", stay:{name:"",url:""},
+   foods:["羽幌海鮮丼","天塩町蜆貝拉麵"], warnings:[],
+   stops:[
+    S("稚內出發","🚗",45.4111,141.6811,"早餐後出發。",P.fukuko),
+    S("野寒布岬","🌅",45.4497,141.6422,"稚內西側海岬，可眺望利尻島。",P.noshappu),
+    S("拔海港（看海豹）","🦭",45.3186,141.6373,"運氣好可在岩礁看到野生斑海豹，請保持距離。",P.seal,
+      {via:[[44.8836,141.7456],[44.3597,141.7029]], viaNote:"路線經天塩、羽幌，沿日本海海岸線南下，欣賞利尻富士海景"}),
+    S("返回旭川","🏨",43.7670,142.3589,"沿海線南下後回旭川，途中可在羽幌吃海鮮丼、天塩町吃蜆貝拉麵。",P.heiwa,{foods:["羽幌海鮮丼","天塩町蜆貝拉麵"]})
+   ]},
+ { date:"10/22", wd:"四", title:"旭川 ➔ 層雲峽", route:"旭川 ➔ 層雲峽（黑岳纜車／銀河流星瀑布）➔ 返旭川", drive:"單程約 1.5 小時", city:"旭川", stay:{name:"",url:""},
+   foods:["層雲峽溫泉拉麵","溪谷岩魚料理"], warnings:[],
+   stops:[
+    S("旭川出發","🚗",43.7670,142.3589,"沿國道39號往東。",P.heiwa),
+    S("層雲峽・黑岳纜車","🚠",43.7258,142.9472,"大雪山溪谷；搭纜車上黑岳賞紅葉，銀河・流星瀑布就在附近。",P.kurodake,{foods:["層雲峽溫泉拉麵","溪谷岩魚料理"]}),
+    S("返回旭川","🏨",43.7670,142.3589,"回程。",P.heiwa)
+   ]},
+ { date:"10/23", wd:"五", title:"美瑛 ➔ 富良野", route:"旭川 ➔ 美瑛（拼布之路／青池）➔ 富良野（精靈露台）", drive:"約 1.5–2 小時", city:"旭川", stay:{name:"",url:""},
+   foods:["美瑛和牛咖哩","青池霜淇淋","森之時計手沖咖啡"], warnings:["⚠️ 精靈露台營業至 20:45，建議 16:30 前抵達看點燈"],
+   stops:[
+    S("旭川出發","🚗",43.7670,142.3589,"往南至美瑛。",P.heiwa),
+    S("美瑛拼布之路","🌾",43.6008,142.4517,"丘陵田園風景，馬鈴薯與麥田如拼布。",P.patch,{foods:["美瑛和牛咖哩"]}),
+    S("青池","💧",43.4933,142.6139,"夢幻藍色池水，旁有霜淇淋可吃。",P.blue,{foods:["青池霜淇淋"]}),
+    S("新富良野精靈露台","🌲",43.3228,142.3551,"森林小木屋手作店，夜晚點燈浪漫。",P.ningle,{foods:["森之時計手沖咖啡"],warn:"⚠️ 營業至 20:45，建議 16:30 前抵達看點燈"})
+   ]},
+ { date:"10/24", wd:"六", title:"旭川 ➔ 余市 ➔ 小樽", route:"旭川 ➔ 石狩川河口／金大亭 ➔ 余市（Nikka 蒸餾所／柿崎商店）➔ 小樽運河／堺町通", drive:"約 2.5 小時", city:"小樽", stay:{name:"",url:""},
+   foods:["金大亭正宗鮭魚石狩鍋","柿崎商店海鮮丼","小樽政寿司","LeTAO 雙層芝士蛋糕"], warnings:[],
+   stops:[
+    S("旭川出發","🚗",43.7670,142.3589,"沿道央道南下。",P.heiwa),
+    S("石狩川河口／金大亭","🍲",43.2458,141.3622,"石狩鍋發祥名店。",P.ishikari,{foods:["金大亭正宗鮭魚石狩鍋"]}),
+    S("余市・Nikka 蒸餾所","🥃",43.1881,140.7885,"威士忌蒸餾所參觀，附近有柿崎商店。",P.nikka,{foods:["柿崎商店海鮮丼"]}),
+    S("小樽運河／堺町通","🏮",43.1971,141.0022,"運河倉庫群與玻璃工藝、甜點老街。",P.canal,{foods:["小樽政寿司","LeTAO 雙層芝士蛋糕"]})
+   ]},
+ { date:"10/25", wd:"日", title:"小樽 ➔ 洞爺湖 ➔ 小樽", route:"小樽 ➔ 喜茂別町 View Point ➔ 真狩村 View Point（真狩湧水）➔ 洞爺湖 ➔ 天狗山夜景 ➔ 返小樽", drive:"大環線約 3.5 小時", city:"小樽", stay:{name:"",url:""},
+   foods:["高橋牧場鮮奶泡芙","Boyotei 望羊諦洋食漢堡排","真狩豆腐豆腐排"], warnings:["⚠️ 天狗山纜車建議 16:00–16:30 搭乘（16:45 日落）"],
+   stops:[
+    S("小樽出發","🚗",43.1971,141.0022,"經國道5號往羊蹄山方向。",P.canal),
+    S("喜茂別町 View Point","🏔️",42.8011,140.9258,"眺望羊蹄山的景觀點。",P.yotei,{foods:["高橋牧場鮮奶泡芙","Boyotei 望羊諦洋食漢堡排"]}),
+    S("真狩村 View Point（真狩湧水）","💦",42.7633,140.7925,"羊蹄山湧泉與觀景點。",P.yotei,{foods:["真狩豆腐豆腐排"]}),
+    S("洞爺湖賽羅展望台","🛶",42.6108,140.8353,"俯瞰洞爺湖的展望台。",P.toya),
+    S("天狗山纜車","🌃",43.1797,140.9691,"小樽夜景名所。",P.tengu,{warn:"⚠️ 纜車建議 16:00–16:30 搭乘（16:45 日落）"})
+   ]},
+ { date:"10/26", wd:"一", title:"小樽 ➔ 定山溪 ➔ 札幌", route:"小樽退房 ➔ 定山溪溫泉（二見吊橋／溪谷賞楓）➔ 札幌中島公園", drive:"約 1.5 小時", city:"札幌", stay:{name:"",url:""},
+   foods:["大正密庵溫泉饅頭","札幌湯咖哩（GARAKU／Suage+）"], warnings:[],
+   stops:[
+    S("小樽出發","🚗",43.1971,141.0022,"退房後往南。",P.canal),
+    S("定山溪溫泉（二見吊橋）","🍁",42.9651,141.1661,"溪谷紅葉最佳位置。",P.jozankei,{foods:["大正密庵溫泉饅頭"]}),
+    S("札幌中島公園","🌳",43.0450,141.3547,"市區公園，晚餐吃湯咖哩。",P.nakajima,{foods:["札幌湯咖哩（GARAKU／Suage+）"]})
+   ]},
+ { date:"10/27", wd:"二", title:"札幌：北大銀杏 ➔ 藻岩山", route:"札幌 ➔ 北海道大學（銀杏大道）➔ 狸小路／藻岩山夜景", drive:"市區移動為主", city:"札幌", stay:{name:"",url:""},
+   foods:["成吉思汗達摩烤羊肉","札幌味噌拉麵"], warnings:["⚠️ 北大銀杏 16:30 天黑點燈"],
+   stops:[
+    S("北海道大學銀杏大道","🍂",43.0725,141.3431,"秋天金黃銀杏隧道。",P.hokudai,{warn:"⚠️ 16:30 天黑點燈"}),
+    S("狸小路商店街","🛒",43.0560,141.3530,"札幌最老的商店街。",P.tanuki,{foods:["札幌味噌拉麵","成吉思汗達摩烤羊肉"]}),
+    S("藻岩山纜車","🌃",43.0242,141.3328,"日本新三大夜景。",P.moiwa)
+   ]},
+ { date:"10/28", wd:"三", title:"札幌近郊：鈴蘭丘陵 ＆ 頭大佛", route:"札幌 ➔ 國營瀧野鈴蘭丘陵公園 ➔ 真駒內滝野靈園（頭大佛＋巨石陣）➔ 返札幌市區採買／北海道神宮", drive:"約 1 小時（市區＋近郊）", city:"札幌", stay:{name:"",url:""},
+   foods:["場外市場海鮮丼","札幌甜點"], warnings:["⚠️ 頭大佛與巨石陣距離瀧野鈴蘭公園僅 3 分鐘車程"],
+   stops:[
+    S("國營瀧野鈴蘭丘陵公園","🌸",42.9158,141.3853,"札幌近郊大型國營公園，秋季賞楓。",P.takino),
+    S("真駒內滝野靈園（頭大佛）","🗿",42.9217,141.3592,"安藤忠雄設計的頭大佛與巨石陣。",P.buddha,{warn:"⚠️ 距離瀧野鈴蘭公園僅 3 分鐘車程"}),
+    S("北海道神宮","⛩️",43.0542,141.3078,"札幌總鎮守，返市區採買。",P.jingu,{foods:["場外市場海鮮丼","札幌甜點"]})
+   ]},
+ { date:"10/29", wd:"四", title:"札幌 ➔ 新千歲機場 ➔ 返台", route:"札幌 ➔ 新千歲機場 (CTS) ➔ 搭機返台", drive:"約 1 小時", city:"", stay:{name:"",url:""}, rent:{return:{name:"",url:""}},
+   foods:["機場拉麵道場","十勝豚丼"], warnings:[],
+   stops:[
+    S("札幌出發","🚗",43.0687,141.3508,"預留還車時間。",P.clock),
+    S("新千歲機場 (CTS)","✈️",42.7752,141.6923,"還車、辦理登機，搭機返台。",P.cts,{foods:["機場拉麵道場","十勝豚丼"]})
+   ]}
+];
+
+/* ---------- 工具 ---------- */
+const imgUrl = f => "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(f.replace(/ /g,"_")) + "?width=800";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+function imgTag(stop, cls=""){
+  return `<img ${cls} src="${imgUrl(stop.photo)}" alt="${esc(stop.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`;
+}
+
+/* ---------- 地圖 ---------- */
+const map = L.map("map", {zoomControl:true}).setView([43.5,142.5], 7);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:19, attribution:"© OpenStreetMap contributors"}).addTo(map);
+let layer = L.layerGroup().addTo(map);
+let markers = [];
+let cur = 0, routeToken = 0;
+
+const routeCache = {};
+function cacheGet(i){ if(routeCache[i]) return routeCache[i]; try{ const v=localStorage.getItem("hk-route-v2-"+i); if(v) return routeCache[i]=JSON.parse(v);}catch(e){} return null; }
+function cacheSet(i,v){ routeCache[i]=v; try{ localStorage.setItem("hk-route-v2-"+i, JSON.stringify(v)); }catch(e){} }
+
+async function fetchRoute(i){
+  const c = cacheGet(i); if(c) return c;
+  const pts = []; TRIP[i].stops.forEach(s => { pts.push([s.lat,s.lng]); (s.via||[]).forEach(v => pts.push(v)); });
+  const coords = pts.map(p => p[1]+","+p[0]).join(";");
+  const url = "https://router.project-osrm.org/route/v1/driving/"+coords+"?overview=full&geometries=geojson&steps=false";
+  const ctl = new AbortController(); const t = setTimeout(()=>ctl.abort(), 15000);
+  try{
+    const r = await fetch(url, {signal:ctl.signal});
+    const j = await r.json();
+    if(j.code!=="Ok" || !j.routes[0]) throw new Error(j.code);
+    const v = {geometry:j.routes[0].geometry, distance:j.routes[0].distance, duration:j.routes[0].duration};
+    cacheSet(i,v); return v;
+  } finally { clearTimeout(t); }
+}
+
+const fmtDur = s => { const h=Math.floor(s/3600), m=Math.round(s%3600/60); return (h?h+" 小時 ":"")+m+" 分"; };
+
+async function drawRoute(i){
+  const token = ++routeToken, day = TRIP[i], pills = $("osrmPill");
+  if(day.walkOnly){ pills.innerHTML=""; return; }
+  $("loading").classList.add("show");
+  try{
+    const r = await fetchRoute(i);
+    if(token!==routeToken) return;
+    L.geoJSON(r.geometry, {style:{color:"#fff",weight:9,opacity:.9}}).addTo(layer);
+    L.geoJSON(r.geometry, {style:{color:"#2f6db5",weight:5,opacity:.95}}).addTo(layer);
+    markers.forEach(m=>m.bringToFront && m.bringToFront());
+    pills.innerHTML = `<span class="pill osrm">🛣️ OSRM 實際路線 ${(r.distance/1000).toFixed(0)} km・純行車約 ${fmtDur(r.duration)}</span>`;
+  }catch(e){
+    if(token!==routeToken) return;
+    L.polyline(day.stops.map(s=>[s.lat,s.lng]), {color:"#2f6db5",weight:4,dashArray:"8 8",opacity:.8}).addTo(layer);
+    pills.innerHTML = `<span class="pill warn-note" id="retry">⚠️ 路線服務暫時無法連線，顯示示意線（點此重試）</span>`;
+    $("retry").onclick = () => renderDay(cur, {keepScroll:true});
+  }finally{
+    if(token===routeToken) $("loading").classList.remove("show");
+  }
+}
+
+/* ---------- 畫面 ---------- */
+function popupHtml(s){
+  return `<div class="pop">${imgTag(s)}<div><h4>${s.em} ${esc(s.name)}</h4><p>${esc(s.desc)}</p>`
+    + (s.warn?`<span class="tag warn">${esc(s.warn)}</span>`:"")
+    + (s.foods||[]).map(f=>`<span class="tag food">🍴 ${esc(f)}</span>`).join("") + `</div></div>`;
+}
+
+/* ---------- 住宿 / 租車連結 ---------- */
+const LINK_KEY = "hk-links-v1";
+const KIND_LABEL = {stay:"住宿", pickup:"取車", return:"還車"};
+const loadOv = () => { try{ return JSON.parse(localStorage.getItem(LINK_KEY)) || {}; }catch(e){ return {}; } };
+const saveOv = o => { try{ localStorage.setItem(LINK_KEY, JSON.stringify(o)); }catch(e){} };
+const safeUrl = u => { try{ const x = new URL(String(u).trim()); return /^https?:$/.test(x.protocol) ? x.href : null; }catch(e){ return null; } };
+function getInfo(i, kind){
+  const ov = loadOv()[i+":"+kind]; if(ov) return ov;
+  return (kind==="stay" ? TRIP[i].stay : (TRIP[i].rent||{})[kind]) || {name:"",url:""};
+}
+function infoHref(info){
+  const u = info.url && safeUrl(info.url); if(u) return u;
+  return info.name ? "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(info.name) : null;
+}
+function renderMeta(){
+  const d = TRIP[cur], box = $("meta"); if(!box) return;
+  let h = "";
+  if(d.city){
+    const info = getInfo(cur,"stay"), href = infoHref(info);
+    h += `<div class="stayrow">🏨 住宿：<span class="city">${esc(d.city)}</span>`
+      + (info.name ? ` <a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(info.name)} ↗</a>` : ` <span class="muted">尚未填寫住宿</span>`)
+      + ` <button class="mini" data-edit="stay">✏️ 編輯</button></div>`;
+  } else {
+    h += `<div class="stayrow">✈️ 搭機返台</div>`;
+  }
+  Object.keys(d.rent||{}).forEach(kind => {
+    const info = getInfo(cur,kind), href = infoHref(info), label = "🚗 "+KIND_LABEL[kind];
+    h += `<div class="stayrow">` + (href
+      ? `<a class="rentbtn" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${label}${info.name?"・"+esc(info.name):""} ↗</a>`
+      : `<button class="rentbtn empty" data-edit="${kind}">${label}（尚未填寫）</button>`)
+      + ` <button class="mini" data-edit="${kind}">✏️ 編輯</button></div>`;
+  });
+  box.innerHTML = h;
+}
+let editing = null;
+function openEdit(kind){
+  editing = {i:cur, kind}; const info = getInfo(cur,kind);
+  $("dlgTitle").textContent = `Day ${pad(cur+1)}・${KIND_LABEL[kind]}`;
+  $("dlgName").value = info.name||""; $("dlgUrl").value = info.url||""; $("dlgErr").textContent = "";
+  $("dlg").showModal();
+}
+$("list").addEventListener("click", e => {
+  const b = e.target.closest("[data-edit]"); if(b){ e.stopPropagation(); openEdit(b.dataset.edit); }
+}, true);
+$("dlgForm").addEventListener("submit", e => {
+  const name = $("dlgName").value.trim(), url = $("dlgUrl").value.trim();
+  if(url && !safeUrl(url)){ e.preventDefault(); $("dlgErr").textContent = "連結格式不正確，只接受 http:// 或 https:// 開頭的網址"; return; }
+  const ov = loadOv(); ov[editing.i+":"+editing.kind] = {name, url: url ? safeUrl(url) : ""}; saveOv(ov);
+  renderMeta();
+});
+$("dlgReset").onclick = () => { const ov = loadOv(); delete ov[editing.i+":"+editing.kind]; saveOv(ov); $("dlg").close(); renderMeta(); };
+$("dlgCancel").onclick = () => $("dlg").close();
+
+function renderTabs(){
+  $("tabs").innerHTML = TRIP.map((d,i)=>`<button class="tab" data-i="${i}">Day ${pad(i+1)}<small>${d.date}（${d.wd}）</small></button>`).join("");
+  $("tabs").onclick = e => { const b=e.target.closest(".tab"); if(b) renderDay(+b.dataset.i); };
+}
+
+function renderDay(i, opt={}){
+  cur = i; const d = TRIP[i];
+  document.querySelectorAll(".tab").forEach((t,k)=>{
+    t.classList.toggle("active", k===i);
+    if(k===i) t.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
+  });
+  history.replaceState(null,"","#day-"+pad(i+1));
+  document.title = `Day ${pad(i+1)}・北海道自駕行程`;
+
+  $("list").innerHTML = `
+    <section class="summary">
+      <div class="date">DAY ${pad(i+1)} ・ ${d.date}（${d.wd}）</div>
+      <h2>${esc(d.title)}</h2>
+      <div id="meta"></div>
+      <div class="route">${esc(d.route)}</div>
+      <div class="pills"><span class="pill">🚗 預估車程 ${esc(d.drive)}</span><span id="osrmPill"></span></div>
+      <div>${d.warnings.map(w=>`<span class="tag warn">${esc(w)}</span>`).join("")}</div>
+      <div class="foods-box">${d.foods.map(f=>`<span class="tag food">🍴 ${esc(f)}</span>`).join("")}</div>
+    </section>
+    ${d.stops.map((s,k)=>`
+      <article class="card" data-k="${k}">
+        <div class="photo"><div class="ph">${s.em}</div><div class="num">${k+1}</div>${imgTag(s)}</div>
+        <div class="body">
+          <h3>${esc(s.name)}</h3>
+          ${s.time?`<div class="time">🕒 ${esc(s.time)}</div>`:""}
+          ${s.viaNote?`<div class="time">🌊 ${esc(s.viaNote)}</div>`:""}
+          <p>${esc(s.desc)}</p>
+          ${s.warn?`<span class="tag warn">${esc(s.warn)}</span>`:""}
+          ${(s.foods||[]).map(f=>`<span class="tag food">🍴 ${esc(f)}</span>`).join("")}
+        </div>
+      </article>`).join("")}
+    <div class="credit">地圖 © OpenStreetMap ・ 路線 OSRM ・ 照片 Wikimedia Commons</div>`;
+  renderMeta();
+  $("daybar").innerHTML = d.city ? `🏨 Day ${pad(i+1)} 住宿：<b>${esc(d.city)}</b>` : `✈️ Day ${pad(i+1)}：搭機返台`;
+  if(!opt.keepScroll) $("list").scrollTop = 0;
+
+  layer.clearLayers(); markers = [];
+  d.stops.forEach((s,k)=>{
+    const m = L.marker([s.lat,s.lng], {icon:L.divIcon({className:"", html:`<div class="mk"><b>${k+1}</b></div>`, iconSize:[30,30], iconAnchor:[15,30], popupAnchor:[0,-30]})})
+      .bindPopup(popupHtml(s), {maxWidth:240}).addTo(layer);
+    m.on("click", ()=>highlight(k,true));
+    markers.push(m);
+  });
+  map.fitBounds(L.latLngBounds(d.stops.map(s=>[s.lat,s.lng])), {padding:[50,50], maxZoom:11});
+  drawRoute(i);
+}
+
+function highlight(k, fromMap){
+  document.querySelectorAll(".card").forEach((c,n)=>c.classList.toggle("active", n===k));
+  if(fromMap) document.querySelector(`.card[data-k="${k}"]`)?.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+$("list").addEventListener("click", e => {
+  const c = e.target.closest(".card"); if(!c) return;
+  const k = +c.dataset.k, s = TRIP[cur].stops[k];
+  highlight(k);
+  map.flyTo([s.lat,s.lng], 14, {duration:1.2});
+  map.once("moveend", ()=>markers[k].openPopup());
+});
+
+document.addEventListener("keydown", e => {
+  if(e.key==="ArrowRight" && cur<TRIP.length-1) renderDay(cur+1);
+  if(e.key==="ArrowLeft" && cur>0) renderDay(cur-1);
+});
+window.addEventListener("resize", ()=>map.invalidateSize());
+
+renderTabs();
+const m = location.hash.match(/day-(\d+)/);
+renderDay(m && TRIP[+m[1]-1] ? +m[1]-1 : 0);
+setTimeout(()=>map.invalidateSize(), 200);
+</script>
+</body>
+</html>
