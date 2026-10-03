@@ -173,7 +173,9 @@ const P = {
   canal:"Otaru Canal HDR2.jpg",
   takino:"Takino Suzuran Hillside Park - Sep 17, 2023.jpg",
   buddha:"Hill of the Buddha, Makomanai Takino Cemetery 1 - Jul 11, 2020.jpg",
-  jingu:"Hokkaido Jingu.JPG"
+  jingu:"Hokkaido Jingu.JPG",
+  wkpark:"市内から公園を見上げる - panoramio.jpg",
+  hokumon:"稚内 北門神社 - panoramio.jpg"
 };
 const S = (name, em, lat, lng, desc, photo, extra={}) => ({name, em, lat, lng, desc, photo, ...extra});
 
@@ -184,12 +186,14 @@ const TRIP = [
     S("新千歲機場 (CTS)","✈️",42.7752,141.6923,"取車、啟程自駕，沿道央道北上旭川。",P.cts,{time:"抵達・取車"}),
     S("旭川平和通買物公園","🛍️",43.7670,142.3589,"日本第一條永久步行者天國，晚餐在此周邊。",P.heiwa,{foods:["旭川醬油拉麵（青葉／梅光軒）","成吉思汗大黑屋烤羊肉"]})
    ]},
- { date:"10/20", wd:"二", title:"旭川 ➔ 宗谷岬 ➔ 稚內", route:"旭川 ➔ 宗谷岬（最北端）➔ 宗谷丘陵白色小路 ➔ 稚內副港市場", drive:"約 3.5–4 小時", city:"稚內", stay:{name:"",url:""},
+ { date:"10/20", wd:"二", title:"旭川 ➔ 宗谷岬 ➔ 稚內", route:"旭川 ➔ 宗谷岬（最北端）➔ 宗谷丘陵白色小路 ➔ 稚內公園（開基百年紀念塔）➔ 北門神社 ➔ 稚內副港市場", drive:"約 3.5–4 小時（稚內市區景點另計）", city:"稚內", stay:{name:"",url:""},
    foods:["最北端食堂 扇貝拉麵","章魚涮涮鍋","宗谷黑牛"], warnings:[],
    stops:[
     S("旭川出發","🚗",43.7670,142.3589,"一早沿國道40號北上。",P.heiwa),
     S("宗谷岬（日本最北端）","🧭",45.5228,141.9366,"最北端之碑與間宮林藏像，必拍地標。",P.soya,{foods:["最北端食堂 扇貝拉麵"]}),
     S("宗谷丘陵白色小路","🛣️",45.4981,141.9542,"貝殼鋪成的白色小路，延伸至丘陵與海。",P.soyaHill),
+    S("稚內公園・開基百年紀念塔","🗼",45.4168,141.6634,"市區高台公園，有紀念稚內開基百年的紀念塔，可俯瞰稚內市區與港灣。",P.wkpark),
+    S("北門神社","⛩️",45.4200,141.6713,"稚內市區的神社，順路參拜。",P.hokumon),
     S("稚內副港市場","🐙",45.4111,141.6811,"海鮮市場與溫泉設施，晚餐吃章魚涮涮鍋。",P.fukuko,{foods:["章魚涮涮鍋","宗谷黑牛"]})
    ]},
  { date:"10/21", wd:"三", title:"稚內 ➔ 歐羅巴海線 ➔ 旭川", route:"稚內 ➔ 野寒布岬 ➔ 拔海港（看海豹）➔ 日本海歐羅巴海線（106 號）➔ 返旭川", drive:"約 4 小時", city:"旭川", stay:{name:"",url:""},
@@ -280,8 +284,8 @@ let markers = [];
 let cur = 0, routeToken = 0;
 
 const routeCache = {};
-function cacheGet(i){ if(routeCache[i]) return routeCache[i]; try{ const v=localStorage.getItem("hk-route-v2-"+i); if(v) return routeCache[i]=JSON.parse(v);}catch(e){} return null; }
-function cacheSet(i,v){ routeCache[i]=v; try{ localStorage.setItem("hk-route-v2-"+i, JSON.stringify(v)); }catch(e){} }
+function cacheGet(i){ if(routeCache[i]) return routeCache[i]; try{ const v=localStorage.getItem("hk-route-v3-"+i); if(v) return routeCache[i]=JSON.parse(v);}catch(e){} return null; }
+function cacheSet(i,v){ routeCache[i]=v; try{ localStorage.setItem("hk-route-v3-"+i, JSON.stringify(v)); }catch(e){} }
 
 async function fetchRoute(i){
   const c = cacheGet(i); if(c) return c;
